@@ -1768,6 +1768,10 @@ a:hover {
   white-space: nowrap;
 }
 
+.avatar img {
+  object-fit: cover;
+  object-position: center;
+}
 .footer {
   padding-top: 30px;
   font-size: 1.2rem;
