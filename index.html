@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" color-mode="light">
+<html lang="vn" color-mode="light">
 
   <head>
   <meta charset="utf-8">
@@ -65,7 +65,19 @@
 
   <body>
     <div id="app">
+      
+
+<div class="language-switch" title="Ngôn ngữ">
+  <button type="button" aria-label="Ngôn ngữ">VN</button>
+  <div class="language-menu">
+    <a href="/" class="active">VN</a>
+    <a href="/en/" class="">EN</a>
+  </div>
+</div>
+
+
       <div class="header">
+  
   <div class="avatar">
     <a href="/">
       <!-- 头像取消懒加载，添加no-lazy -->
@@ -152,8 +164,8 @@
       <div class="post-title">Trang Chủ</div>
       <div class="post-attach">
         <span class="post-pubtime">
-          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
-          2026-05-12 15:27:24
+          <i class="iconfont icon-updatetime mr-10" title="Cập nhật"></i>
+          12-05-2026 15:27:24
         </span>
         
       </div>
@@ -189,8 +201,8 @@
           </div>
           <div class="post-attach">
             <span class="post-pubtime">
-              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
-              2026-05-12 15:27:24
+              <i class="iconfont icon-updatetime mr-10" title="Cập nhật"></i>
+              12-05-2026 15:27:24
             </span>
             
           </div>
@@ -205,7 +217,7 @@
     <i class="iconfont icon-catalog"></i>
   </div>
   <div class="post-catalog hidden" id="catalog">
-    <div class="title">Contents</div>
+    <div class="title">Nội dung</div>
     <div class="catalog-content">
       
         <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9A%80-Ve-minh"><span class="toc-text">🚀 Về mình</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%92%B5-Check-legit"><span class="toc-text">💵 Check legit:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9B%A0-Ky-nang"><span class="toc-text">🛠 Kỹ năng</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%9E-Lien-he"><span class="toc-text">📞 Liên hệ</span></a></li></ol>
@@ -297,7 +309,7 @@
           </a>
         </span>
         
-          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+          <input type="text" class="search-input" id="search-input" placeholder="Tìm kiếm...">
         
         <span class="search-close-icon" id="search-close-icon">
           <a href="javascript: void(0)">
@@ -349,7 +361,7 @@
       'use strict';
       var $input = document.getElementById(search_id);
       var $resultContent = document.getElementById(content_id);
-      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>Đang tải dữ liệu tìm kiếm, vui lòng chờ...<span></ul>";
       $.ajax({
         // 0x01. load xml file
         url: path,
@@ -445,7 +457,7 @@
             });
             str += "</ul>";
             if (str.indexOf('<li>') === -1) {
-              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>Không có kết quả<span></ul>";
             }
             $resultContent.innerHTML = str;
           });
@@ -453,9 +465,9 @@
         error: function(xhr, status, error) {
           $resultContent.innerHTML = ""
           if (xhr.status === 404) {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>Không tìm thấy file search.xml, vui lòng xem:<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
           } else {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>Yêu cầu thất bại, hãy thử tải lại trang hoặc thử lại sau.<span></ul>";
           }
         }
       });

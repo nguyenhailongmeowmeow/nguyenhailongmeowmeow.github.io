@@ -2155,6 +2155,58 @@ a:hover {
 .ml-30 {
   margin-left: 30px;
 }
+.language-switch {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.language-switch button {
+  min-width: 42px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--color-divider-md-border);
+  border-radius: 6px;
+  color: var(--color-text-a);
+  background-color: var(--bg-content-search);
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+.language-switch button:hover {
+  color: var(--color-text-a-hover);
+}
+.language-menu {
+  display: none;
+  min-width: 58px;
+  margin-top: 6px;
+  border: 1px solid var(--color-divider-md-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--bg-content-search);
+  backdrop-filter: blur(10px);
+}
+.language-switch:hover .language-menu,
+.language-switch:focus-within .language-menu {
+  display: block;
+}
+.language-menu a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--color-text-a);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  border-bottom: 0;
+}
+.language-menu a:hover,
+.language-menu a.active {
+  color: var(--color-text-a-hover);
+  background-color: rgba(128,128,128,0.12);
+}
 .v[data-class="v"] .vwrap .vheader .vinput:focus {
   border-bottom-color: #808080 !important;
 }
