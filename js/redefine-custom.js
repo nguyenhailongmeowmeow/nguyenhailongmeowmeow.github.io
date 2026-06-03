@@ -9,6 +9,28 @@
     "/en/software-tools/": "/vn/phan-mem-cong-cu/",
     "/en/web-tools/": "/vn/cong-cu-lam-web/",
   };
+  const navigationMap = [
+    {
+      viPath: "/vn/",
+      enPath: "/en/",
+      enLabel: "HOME",
+    },
+    {
+      viPath: "/vn/kho-anh/",
+      enPath: "/en/photo-gallery/",
+      enLabel: "PHOTO GALLERY",
+    },
+    {
+      viPath: "/vn/phan-mem-cong-cu/",
+      enPath: "/en/software-tools/",
+      enLabel: "SOFTWARE/TOOLS",
+    },
+    {
+      viPath: "/vn/cong-cu-lam-web/",
+      enPath: "/en/web-tools/",
+      enLabel: "WEB TOOLS",
+    },
+  ];
 
   function normalizePath(pathname) {
     return pathname.endsWith("/") ? pathname : `${pathname}/`;
@@ -21,6 +43,51 @@
   function getLanguageTarget() {
     const current = normalizePath(window.location.pathname);
     return languageMap[current] || (isEnglishPage() ? "/vn/" : "/en/");
+  }
+
+  function setAnchorLabel(anchor, label) {
+    const drawerLabel = anchor.querySelector("span");
+    if (drawerLabel) {
+      drawerLabel.textContent = label;
+      return;
+    }
+
+    const textNode = Array.from(anchor.childNodes).find(function (node) {
+      return node.nodeType === Node.TEXT_NODE && node.textContent.trim();
+    });
+
+    if (textNode) {
+      textNode.textContent = ` ${label} `;
+    } else {
+      anchor.appendChild(document.createTextNode(` ${label} `));
+    }
+  }
+
+  function syncNavigationLanguage() {
+    const english = isEnglishPage();
+    const homePath = english ? "/en/" : "/vn/";
+
+    document
+      .querySelectorAll(".navbar-content .logo-image, .navbar-content .logo-title")
+      .forEach(function (anchor) {
+        anchor.setAttribute("href", homePath);
+      });
+
+    navigationMap.forEach(function (item) {
+      const fromPath = english ? item.viPath : item.enPath;
+      const toPath = english ? item.enPath : item.viPath;
+
+      document
+        .querySelectorAll(
+          `.navbar-list a[href="${fromPath}"], .drawer-navbar-list a[href="${fromPath}"], .navbar-list a[href="${toPath}"], .drawer-navbar-list a[href="${toPath}"]`
+        )
+        .forEach(function (anchor) {
+          anchor.setAttribute("href", toPath);
+          if (english) {
+            setAnchorLabel(anchor, item.enLabel);
+          }
+        });
+    });
   }
 
   function ensureVideoBackground() {
@@ -47,6 +114,7 @@
 
   function addTopActions() {
     ensureVideoBackground();
+    syncNavigationLanguage();
     fixNavbarActiveState();
 
     const navbarRight = document.querySelector(".navbar-content .right");
