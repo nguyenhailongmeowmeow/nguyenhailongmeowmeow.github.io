@@ -1,461 +1,665 @@
 <!DOCTYPE html>
-<html lang="vn" color-mode="light">
-
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="author" content="Nguyễn Hải Long" />
-  <!-- Open Graph Description 简短摘要-->
-  
-  <!-- 用于搜索引擎的文章摘要 -->
-  
-  
-  
-  <title>
+<html lang="vn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
     
-      Photo Gallery 
-      
-      
-      |
     
-     Nguyễn Hải Long
-  </title>
+    <meta name="author" content="Nguyễn Hải Long">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
 
-  
-    <link rel="apple-touch-icon" href="/images/avatar.png">
-    <link rel="icon" href="/images/avatar.png">
-  
+                // Try immediately
+                if (addBodyClass()) return;
 
-  <!-- Raleway-Font -->
-  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- hexo site css -->
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
-  <!-- 代码块风格 -->
-  
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://nguyenhailongmeowmeow.github.io/photo-gallery/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Nguyễn Hải Long">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Photo Gallery">
+<meta property="og:url" content="https://nguyenhailongmeowmeow.github.io/en/photo-gallery/index.html">
+<meta property="og:site_name" content="Nguyễn Hải Long">
+<meta property="og:description" content="Nguyễn Hải Long">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nguyenhailongmeowmeow.github.io/images/avatar.png">
+<meta property="article:published_time" content="2026-05-12T08:38:00.000Z">
+<meta property="article:modified_time" content="2026-05-25T07:26:20.271Z">
+<meta property="article:author" content="Nguyễn Hải Long">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nguyenhailongmeowmeow.github.io/images/avatar.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/avatar.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+    <meta name="theme-color" content="#4f7cff">
+    <link rel="shortcut icon" href="/images/avatar.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Photo Gallery | Nguyễn Hải Long
+        
+    </title>
 
-  <!-- jquery3.3.1 -->
-  
-    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
-  
-
-  <!-- fancybox -->
-  
-    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
-    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
-  
-  
-<script src="/js/fancybox.js"></script>
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
 
 
-  
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
 
-  
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <script>
-    var html = document.documentElement
-    const colorMode = localStorage.getItem('color-mode')
-    if (colorMode) {
-      document.documentElement.setAttribute('color-mode', colorMode)
-    }
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"nguyenhailongmeowmeow.github.io","root":"/","language":"vn"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.8,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#4f7cff","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":true,"family":"Be Vietnam Pro","url":"https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"},"title":{"enable":true,"family":"Be Vietnam Pro","url":"https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/avatar.png","description":"Nguyễn Hải Long"},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/avatar.png","dark":"/images/avatar.png"},"title":"Nguyễn Hải Long","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#fff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":[{"icon":"fa-brands fa-github","url":null},{"icon":"fa-brands fa-twitter","url":null},{"icon":"fa-solid fa-at","url":"you@example.com"},{"icon":"fa-brands fa-telegram","url":null},{"icon":"/images/custom-icon.svg","url":null}],"qrs":[{"icon":"fa-brands fa-weixin","qr":null},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"#1f2937","right":"#2563eb","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"none","icon":"fa-regular fa-house"},"Trang chủ":{"path":"/vn/","icon":"fa-regular fa-house"},"Kho ảnh":{"path":"/vn/kho-anh/","icon":"fa-regular fa-images"},"Phần mềm/công cụ":{"path":"/vn/phan-mem-cong-cu/","icon":"fa-regular fa-folder-open"},"Công cụ làm web này":{"path":"/vn/cong-cu-lam-web/","icon":"fa-regular fa-code"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":false,"links":null,"avatar":"/images/avatar.png","title":"Nguyễn Hải Long","subtitle":""},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":false,"icon":false,"start":"2022/8/17 11:45:14","statistics":true,"customize":"Copyright © Nguyễn Hải Long","icp":{"enable":false,"number":null,"url":null},"powered":true,"beian":{"enable":false}},"footerStart":"2022/8/17 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
   </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
 <meta name="generator" content="Hexo 8.1.2"></head>
 
 
-  <body>
-    <div id="app">
-      
+<body>
+	<div class="progress-bar-container">
+	
 
-<div class="language-switch" title="Ngôn ngữ">
-  <button type="button" aria-label="Ngôn ngữ">EN</button>
-  <div class="language-menu">
-    <a href="/vn/kho-anh/" class="">VN</a>
-    <a href="/en/photo-gallery/" class="active">EN</a>
-  </div>
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
 </div>
 
+<main class="page-container" id="swup">
 
-      <div class="header">
-  
-  <div class="avatar">
-    <a href="/vn/">
-      <!-- 头像取消懒加载，添加no-lazy -->
-      
-        <img src="/images/avatar.png" alt="">
-      
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
+                    <img src="/images/avatar.png" class="w-full h-full rounded-xs">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                Nguyễn Hải Long
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/vn/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    TRANG CHỦ
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/vn/kho-anh/"
+                                        >
+                                    <i class="fa-regular fa-images fa-fw"></i>
+                                    KHO ẢNH
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/vn/phan-mem-cong-cu/"
+                                        >
+                                    <i class="fa-regular fa-folder-open fa-fw"></i>
+                                    PHẦN MỀM/CÔNG CỤ
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/vn/cong-cu-lam-web/"
+                                        >
+                                    <i class="fa-regular fa-code fa-fw"></i>
+                                    CÔNG CỤ LÀM WEB NÀY
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/vn/"
+                        >
+                            <span>
+                                TRANG CHỦ
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/vn/kho-anh/"
+                        >
+                            <span>
+                                KHO ẢNH
+                            </span>
+                            
+                                <i class="fa-regular fa-images fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/vn/phan-mem-cong-cu/"
+                        >
+                            <span>
+                                PHẦN MỀM/CÔNG CỤ
+                            </span>
+                            
+                                <i class="fa-regular fa-folder-open fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/vn/cong-cu-lam-web/"
+                        >
+                            <span>
+                                CÔNG CỤ LÀM WEB NÀY
+                            </span>
+                            
+                                <i class="fa-regular fa-code fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
     </a>
-    <div class="nickname"><a href="/vn/">Nguyễn Hải Long</a></div>
-  </div>
-  <div class="navbar">
-    <ul>
-      
-        <li class="nav-item" data-path="/en/">
-          <a href="/en/">Home</a>
-        </li>
-      
-        <li class="nav-item" data-path="/en/photo-gallery/">
-          <a href="/en/photo-gallery/">Photo Gallery</a>
-        </li>
-      
-        <li class="nav-item" data-path="/en/software-tools/">
-          <a href="/en/software-tools/">Software/Tools</a>
-        </li>
-      
-        <li class="nav-item" data-path="/en/web-tools/">
-          <a href="/en/web-tools/">Tools Used For This Website</a>
-        </li>
-      
-    </ul>
-  </div>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
 </div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
 
 
-<script src="/js/activeNav.js"></script>
+		</div>
 
+		<div class="main-content-body transition-fade-up">
+			
 
+			<div class="main-content">
+				<div class="page-template-container">
+	
 
-      <div class="flex-container">
-        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
-<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+	
 
+	<div class="page-template-content markdown-body">
+		
+		<h1>Photo Gallery</h1>
+		
 
-  <!-- LaTex Display -->
-
-  
-    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
-  
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      }
-    }
-  </script>
-
-
-
-
-
-  <!-- clipboard -->
-
-  
-    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
-  
-  
-<script src="/js/codeCopy.js"></script>
-
-
-
-
-
-
-
-  
-
-  
-
-  
-  <!-- 关于页 url形式：https://yoursite/about/ -->
-    <div class="container about-index">
-      <div class="markdown-body">
-        <h1 id="Photo-Gallery"><a href="#Photo-Gallery" class="headerlink" title="Photo Gallery"></a>Photo Gallery</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1rrxCG2fqG0hj9j-yTOKQq0vDb4_g6pqe?usp=sharing">Fes 13&#x2F;4&#x2F;2024</a> [Aeon Ha Dong]</li>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1ZU4vdtbFY97crNcpvfzLzZWZ-6n6B5D7?usp=sharing">Fes 7&#x2F;9&#x2F;2025</a> [Aeon Long Bien]</li>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1vHNxDv_9rbfXCABwMb9b4KN2TlnuxzVZ?usp=drive_link">Fes 22&#x2F;3&#x2F;2026</a> [Diamond Place Hanoi]</li>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1yYDcf-kM0GAlQWmzW8i-5gxdTGpyPZEq?usp=drive_link">Fes 12&#x2F;4&#x2F;2026</a> [Aeon Ha Dong]</li>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/11ZK8pGGBA-AjnqKeyXThwxYdGtiSD3JB?usp=drive_link">Fes 26&#x2F;4&#x2F;2026</a> [Go! Ha Nam]</li>
-<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/19U8e2D0jZLHKlnxY70V6TEE8-2KMa4ns?usp=sharing">Fes 24&#x2F;5&#x2F;2026</a> [Thong Nhat Park]</li>
+		<h1 id="Photo-Gallery"><a href="#Photo-Gallery" class="headerlink" title="Photo Gallery"></a>Photo Gallery</h1><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1rrxCG2fqG0hj9j-yTOKQq0vDb4_g6pqe?usp=sharing" >Fes 13&#x2F;4&#x2F;2024<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Aeon Ha Dong]</li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1ZU4vdtbFY97crNcpvfzLzZWZ-6n6B5D7?usp=sharing" >Fes 7&#x2F;9&#x2F;2025<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Aeon Long Bien]</li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1vHNxDv_9rbfXCABwMb9b4KN2TlnuxzVZ?usp=drive_link" >Fes 22&#x2F;3&#x2F;2026<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Diamond Place Hanoi]</li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1yYDcf-kM0GAlQWmzW8i-5gxdTGpyPZEq?usp=drive_link" >Fes 12&#x2F;4&#x2F;2026<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Aeon Ha Dong]</li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/11ZK8pGGBA-AjnqKeyXThwxYdGtiSD3JB?usp=drive_link" >Fes 26&#x2F;4&#x2F;2026<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Go! Ha Nam]</li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/19U8e2D0jZLHKlnxY70V6TEE8-2KMa4ns?usp=sharing" >Fes 24&#x2F;5&#x2F;2026<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> [Thong Nhat Park]</li>
 </ul>
 <hr>
 <p>If you see any photo you’d like removed from the gallery, please let me know 🥹🥹🥹.</p>
 
-      </div>
-    </div>
-  
+	</div>
 
-  
-
-        
-<div class="footer">
-  <div class="social">
-    <ul>
-      
-        <li>
-          
-              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
-                <i class="iconfont icon-github"></i>
-              </a>
-              
-        </li>
-        
-    </ul>
-  </div>
-  
-    
-    <div class="footer-more">
-      
-        <a href="/">Copyright © 2026 Nguyễn Hải Long</a>
-        
-    </div>
-  
-    
-    <div class="footer-more">
-      
-        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
-        
-    </div>
-  
-  
+	<div class="page-template-comments">
+		
+	</div>
 </div>
 
-      </div>
+<div class="paginator">
+	
+</div>
+  
+			</div>
 
-      <div class="tools-bar">
-        <div class="back-to-top tools-bar-item hidden">
-  <a href="javascript: void(0)">
-    <i class="iconfont icon-chevronup"></i>
-  </a>
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1">Copyright © Nguyễn Hải Long</div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">Nguyễn Hải Long</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        0 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+        
+        
+            
+                
+        
+                
+        
+                
+
+                    
+                        <link rel="stylesheet" href="/css/redefine-custom.css?v=10">
+                    
+        
+                
+
+                    
+                        <script data-swup-reload-script src="/js/redefine-custom.js?v=10" defer></script>
+                    
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
 </div>
 
 
-<script src="/js/backtotop.js"></script>
+	
+
+</main>
 
 
 
-        
-  <div class="search-icon tools-bar-item" id="search-icon">
-    <a href="javascript: void(0)">
-      <i class="iconfont icon-search"></i>
-    </a>
-  </div>
+<script src="/js/build/libs/Swup.min.js"></script>
 
-  <div class="search-overlay hidden">
-    <div class="search-content" tabindex="0">
-      <div class="search-title">
-        <span class="search-icon-input">
-          <a href="javascript: void(0)">
-            <i class="iconfont icon-search"></i>
-          </a>
-        </span>
-        
-          <input type="text" class="search-input" id="search-input" placeholder="Tìm kiếm...">
-        
-        <span class="search-close-icon" id="search-close-icon">
-          <a href="javascript: void(0)">
-            <i class="iconfont icon-close"></i>
-          </a>
-        </span>
-      </div>
-      <div class="search-result" id="search-result"></div>
-    </div>
-  </div>
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
 
-  <script type="text/javascript">
-    var inputArea = document.querySelector("#search-input")
-    var searchOverlayArea = document.querySelector(".search-overlay")
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
 
-    inputArea.onclick = function() {
-      getSearchFile()
-      this.onclick = null
-    }
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
 
-    inputArea.onkeydown = function() {
-      if(event.keyCode == 13)
-        return false
-    }
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
 
-    function openOrHideSearchContent() {
-      let isHidden = searchOverlayArea.classList.contains('hidden')
-      if (isHidden) {
-        searchOverlayArea.classList.remove('hidden')
-        document.body.classList.add('hidden')
-        // inputArea.focus()
-      } else {
-        searchOverlayArea.classList.add('hidden')
-        document.body.classList.remove('hidden')
-      }
-    }
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
 
-    function blurSearchContent(e) {
-      if (e.target === searchOverlayArea) {
-        openOrHideSearchContent()
-      }
-    }
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
 
-    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
-    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
-    searchOverlayArea.addEventListener("click", blurSearchContent, false)
-
-    var searchFunc = function (path, search_id, content_id) {
-      'use strict';
-      var $input = document.getElementById(search_id);
-      var $resultContent = document.getElementById(content_id);
-      $resultContent.innerHTML = "<ul><span class='local-search-empty'>Đang tải dữ liệu tìm kiếm, vui lòng chờ...<span></ul>";
-      $.ajax({
-        // 0x01. load xml file
-        url: path,
-        dataType: "xml",
-        success: function (xmlResponse) {
-          // 0x02. parse xml file
-          var datas = $("entry", xmlResponse).map(function () {
-            return {
-              title: $("title", this).text(),
-              content: $("content", this).text(),
-              url: $("url", this).text()
-            };
-          }).get();
-          $resultContent.innerHTML = "";
-
-          $input.addEventListener('input', function () {
-            // 0x03. parse query to keywords list
-            var str = '<ul class=\"search-result-list\">';
-            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-            $resultContent.innerHTML = "";
-            if (this.value.trim().length <= 0) {
-              return;
-            }
-            // 0x04. perform local searching
-            datas.forEach(function (data) {
-              var isMatch = true;
-              var content_index = [];
-              if (!data.title || data.title.trim() === '') {
-                data.title = "Untitled";
-              }
-              var orig_data_title = data.title.trim();
-              var data_title = orig_data_title.toLowerCase();
-              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
-              var data_content = orig_data_content.toLowerCase();
-              var data_url = data.url;
-              var index_title = -1;
-              var index_content = -1;
-              var first_occur = -1;
-              // only match artiles with not empty contents
-              if (data_content !== '') {
-                keywords.forEach(function (keyword, i) {
-                  index_title = data_title.indexOf(keyword);
-                  index_content = data_content.indexOf(keyword);
-
-                  if (index_title < 0 && index_content < 0) {
-                    isMatch = false;
-                  } else {
-                    if (index_content < 0) {
-                      index_content = 0;
-                    }
-                    if (i == 0) {
-                      first_occur = index_content;
-                    }
-                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
-                  }
-                });
-              } else {
-                isMatch = false;
-              }
-              // 0x05. show search results
-              if (isMatch) {
-                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
-                var content = orig_data_content;
-                if (first_occur >= 0) {
-                  // cut out 100 characters
-                  var start = first_occur - 20;
-                  var end = first_occur + 80;
-
-                  if (start < 0) {
-                    start = 0;
-                  }
-
-                  if (start == 0) {
-                    end = 100;
-                  }
-
-                  if (end > content.length) {
-                    end = content.length;
-                  }
-
-                  var match_content = content.substr(start, end);
-
-                  // highlight all keywords
-                  keywords.forEach(function (keyword) {
-                    var regS = new RegExp(keyword, "gi");
-                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
-                  });
-
-                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
-                }
-                str += "</li>";
-              }
-            });
-            str += "</ul>";
-            if (str.indexOf('<li>') === -1) {
-              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>Không có kết quả<span></ul>";
-            }
-            $resultContent.innerHTML = str;
-          });
-        },
-        error: function(xhr, status, error) {
-          $resultContent.innerHTML = ""
-          if (xhr.status === 404) {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>Không tìm thấy file search.xml, vui lòng xem:<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
-          } else {
-            $resultContent.innerHTML = "<ul><span class='local-search-empty'>Yêu cầu thất bại, hãy thử tải lại trang hoặc thử lại sau.<span></ul>";
-          }
-        }
-      });
-      $(document).on('click', '#search-close-icon', function() {
-        $('#search-input').val('');
-        $('#search-result').html('');
-      });
-    }
-
-    var getSearchFile = function() {
-        var path = "/search.xml";
-        searchFunc(path, 'search-input', 'search-result');
-    }
-  </script>
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
 
 
 
-
-        
-  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
-    <a href="javascript: void(0)">
-      <i id="theme-icon" class="iconfont icon-moon"></i>
-    </a>
-  </div>
-
-  
-<script src="/js/colorscheme.js"></script>
+	
+<script src="/js/build/main.js" type="module"></script>
 
 
 
 
 
-        
-  
-    <div class="share-icon tools-bar-item">
-      <a href="javascript: void(0)" id="share-icon">
-        <i class="iconfont iconshare"></i>
-      </a>
-      <div class="share-content hidden">
-        
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Photo%20Gallery + '&url=' + https%3A%2F%2Fnguyenhailongmeowmeow.github.io%2Fen%2Fphoto-gallery%2Findex.html + '" target="_blank" title="Twitter">
-            <i class="iconfont icon-twitter"></i>
-          </a>
-        
-        
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=https://nguyenhailongmeowmeow.github.io/en/photo-gallery/index.html" target="_blank" title="Facebook">
-            <i class="iconfont icon-facebooksquare"></i>
-          </a>
-        
-      </div>
-    </div>
-  
-  
-<script src="/js/shares.js"></script>
 
 
 
-      </div>
-    </div>
-  </body>
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
 </html>
