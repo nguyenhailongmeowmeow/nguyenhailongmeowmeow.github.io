@@ -28,7 +28,7 @@
     if (!video) {
       video = document.createElement("video");
       video.id = "redefine-video-background";
-      video.src = "/images/background.mp4";
+      video.src = "/images/background.mp4?v=11";
       video.autoplay = true;
       video.muted = true;
       video.loop = true;
