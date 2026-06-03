@@ -28,7 +28,7 @@
     if (!video) {
       video = document.createElement("video");
       video.id = "redefine-video-background";
-      video.src = "/images/background.mp4?v=11";
+      video.src = "/images/background.mp4?v=12";
       video.autoplay = true;
       video.muted = true;
       video.loop = true;
@@ -47,6 +47,7 @@
 
   function addTopActions() {
     ensureVideoBackground();
+    fixNavbarActiveState();
 
     const navbarRight = document.querySelector(".navbar-content .right");
     if (!navbarRight || navbarRight.querySelector(".custom-top-actions")) {
@@ -68,6 +69,27 @@
 
     actions.append(languageButton);
     navbarRight.appendChild(actions);
+  }
+
+  function removeActiveToken(element) {
+    if (!element) {
+      return;
+    }
+
+    element.classList.remove("active");
+  }
+
+  function fixNavbarActiveState() {
+    const current = normalizePath(window.location.pathname);
+    ["/vn/", "/en/"].forEach(function (rootPath) {
+      if (!current.startsWith(rootPath) || current === rootPath) {
+        return;
+      }
+
+      document
+        .querySelectorAll(`.navbar-list a[href="${rootPath}"], .drawer-navbar-list a[href="${rootPath}"]`)
+        .forEach(removeActiveToken);
+    });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
