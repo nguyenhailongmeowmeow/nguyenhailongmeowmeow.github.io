@@ -1,14 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.54);
-  --glass-border: rgba(255, 255, 255, 0.28);
-  --glass-shadow: 0 18px 60px rgba(8, 12, 20, 0.18);
+  --page-overlay: linear-gradient(
+    rgba(255, 255, 255, 0.06),
+    rgba(20, 90, 150, 0.1)
+  );
+  --glass-bg: rgba(255, 255, 255, 0.18);
+  --glass-border: rgba(255, 255, 255, 0.34);
+  --glass-shadow: 0 18px 60px rgba(8, 12, 20, 0.12);
   --content-text: rgba(255, 255, 255, 0.96);
+  --content-shadow: 0 2px 8px rgba(0, 0, 0, 0.52);
+  --nav-bg: transparent;
+  --nav-solid-bg: rgba(48, 86, 116, 0.72);
+  --nav-text: rgba(255, 255, 255, 0.92);
 }
 
 .dark {
-  --glass-bg: rgba(18, 22, 31, 0.52);
+  --page-overlay: linear-gradient(
+    rgba(6, 10, 18, 0.22),
+    rgba(6, 10, 18, 0.38)
+  );
+  --glass-bg: rgba(18, 22, 31, 0.38);
+  --glass-border: rgba(255, 255, 255, 0.26);
+  --glass-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+  --content-shadow: 0 2px 10px rgba(0, 0, 0, 0.66);
+  --nav-bg: transparent;
+  --nav-solid-bg: rgba(18, 22, 31, 0.78);
+  --nav-text: rgba(255, 255, 255, 0.95);
 }
 
 html,
@@ -35,7 +53,7 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(rgba(6, 10, 18, 0.08), rgba(6, 10, 18, 0.18));
+  background: var(--page-overlay);
 }
 
 body > :not(#redefine-video-background) {
@@ -65,11 +83,28 @@ body,
 
 .navbar-container {
   z-index: 30;
+  padding-top: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-.navbar-content,
+.navbar-container:hover,
+.page-container .main-content-container .main-content-header {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.transition-navbar,
+.page-template-container,
+.article-content {
+  transition-property: background-color, border-color, box-shadow, opacity !important;
+  transition-duration: 0.12s !important;
+}
+
 .home-article-item,
 .sidebar-content,
 .sidebar-links,
@@ -86,8 +121,30 @@ footer.footer {
 }
 
 .navbar-content {
-  border: 1px solid var(--glass-border);
+  border: 0 !important;
   border-radius: 0 0 18px 18px;
+  background: var(--nav-bg) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.custom-navbar-solid .navbar-container,
+.navbar-shrink .navbar-container {
+  background: var(--nav-solid-bg) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(14px) saturate(1.35) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.35) !important;
+}
+
+.custom-navbar-solid .navbar-content,
+.navbar-shrink .navbar-content {
+  background: transparent !important;
+}
+
+.custom-navbar-solid .page-container .main-content-container .main-content-body,
+.navbar-shrink .page-container .main-content-container .main-content-body {
+  padding-top: 82px !important;
 }
 
 .navbar-content .right {
@@ -105,7 +162,8 @@ footer.footer {
   overflow: hidden !important;
   border: 1px solid rgba(255, 255, 255, 0.42) !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.38) !important;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.22) !important;
 }
 
 .navbar-content .logo-image img,
@@ -117,18 +175,30 @@ footer.footer {
   object-fit: cover !important;
 }
 
+.navbar-content a,
+.navbar-content a span,
+.navbar-content i,
+.drawer-navbar-list a,
+.drawer-navbar-list a span,
+.drawer-navbar-list i {
+  color: var(--nav-text) !important;
+  text-shadow: var(--content-shadow) !important;
+}
+
+.navbar-list a:hover,
+.navbar-list a.active,
+.drawer-navbar-list a:hover,
+.drawer-navbar-list a.active {
+  color: #fff !important;
+}
+
 .page-template-container,
 .article-content {
   border: 1px solid var(--glass-border) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: var(--glass-bg) !important;
   box-shadow: var(--glass-shadow) !important;
   backdrop-filter: blur(16px) saturate(1.6);
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
-}
-
-.dark .page-template-container,
-.dark .article-content {
-  background: rgba(18, 22, 31, 0.28) !important;
 }
 
 .page-template-content.markdown-body,
@@ -143,7 +213,7 @@ footer.footer {
 .article-content,
 .article-content * {
   color: var(--content-text) !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.52) !important;
+  text-shadow: var(--content-shadow) !important;
   letter-spacing: 0 !important;
 }
 
@@ -202,11 +272,13 @@ footer.footer {
   border: 1px solid var(--glass-border);
   border-radius: 999px;
   color: var(--first-text-color);
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.16);
   cursor: pointer;
   font-size: 14px;
   font-weight: 800;
   line-height: 1;
+  text-decoration: none !important;
   transition: transform 0.18s ease, background-color 0.18s ease;
 }
 
@@ -216,6 +288,7 @@ footer.footer {
 
 .dark .custom-top-action {
   color: #fff;
+  background: rgba(18, 22, 31, 0.28);
 }
 
 @media (max-width: 900px) {
@@ -265,7 +338,7 @@ footer.footer {
 
 @media (max-width: 640px) {
   body::before {
-    background: linear-gradient(rgba(6, 10, 18, 0.02), rgba(6, 10, 18, 0.1));
+    background: var(--page-overlay);
   }
 
   .main-content {

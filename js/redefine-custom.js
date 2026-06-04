@@ -1,10 +1,18 @@
 (function () {
+  if (window.__redefineCustomLoaded) {
+    window.__redefineCustomBoot && window.__redefineCustomBoot();
+    return;
+  }
+
+  window.__redefineCustomLoaded = true;
+
   const routes = [
-    ["/vn/", "/en/", "HOME"],
-    ["/vn/kho-anh/", "/en/photo-gallery/", "PHOTO GALLERY"],
-    ["/vn/phan-mem-cong-cu/", "/en/software-tools/", "SOFTWARE/TOOLS"],
-    ["/vn/cong-cu-lam-web/", "/en/web-tools/", "WEB TOOLS"],
+    ["/vn/", "/en/", "TRANG CH\u1ee6", "HOME"],
+    ["/vn/kho-anh/", "/en/photo-gallery/", "KHO \u1ea2NH", "PHOTO GALLERY"],
+    ["/vn/phan-mem-cong-cu/", "/en/software-tools/", "PH\u1ea6N M\u1ec0M/C\u00d4NG C\u1ee4", "SOFTWARE/TOOLS"],
+    ["/vn/cong-cu-lam-web/", "/en/web-tools/", "C\u00d4NG C\u1ee4 L\u00c0M WEB", "WEB TOOLS"],
   ];
+  const themeStatusKey = "REDEFINE-THEME-STATUS";
 
   const normalizePath = (pathname) =>
     pathname.endsWith("/") ? pathname : `${pathname}/`;
@@ -12,25 +20,89 @@
   const currentPath = () => normalizePath(window.location.pathname);
   const isEnglishPage = () => currentPath().startsWith("/en/");
 
+  function pathFromHref(href) {
+    try {
+      return normalizePath(new URL(href, window.location.origin).pathname);
+    } catch (error) {
+      return normalizePath(href);
+    }
+  }
+
+  function routeForPath(path) {
+    const normalized = normalizePath(path);
+    return routes.find(([viPath, enPath]) =>
+      [viPath, enPath].includes(normalized)
+    );
+  }
+
+  function readThemeStatus() {
+    try {
+      const raw = localStorage.getItem(themeStatusKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeThemeStatus(isDark) {
+    const status = readThemeStatus() || {
+      isExpandPageWidth: false,
+      fontSizeLevel: 0,
+      isOpenPageAside: true,
+    };
+
+    status.isDark = isDark;
+    localStorage.setItem(themeStatusKey, JSON.stringify(status));
+  }
+
+  function applyThemeClass(isDark) {
+    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle("light", !isDark);
+    document.body.classList.toggle("dark-mode", isDark);
+    document.body.classList.toggle("light-mode", !isDark);
+  }
+
+  function syncStoredTheme() {
+    const stored = readThemeStatus();
+    if (stored && typeof stored.isDark === "boolean") {
+      applyThemeClass(stored.isDark);
+    }
+  }
+
+  function persistCurrentTheme() {
+    const isDark =
+      document.documentElement.classList.contains("dark") ||
+      document.body.classList.contains("dark-mode");
+
+    writeThemeStatus(isDark);
+  }
+
   function setAnchorLabel(anchor, label) {
-    const span = anchor.querySelector("span");
+    const span = anchor.querySelector(":scope > span");
     if (span) {
-      span.textContent = label;
+      if (span.textContent !== label) {
+        span.textContent = label;
+      }
       return;
     }
 
-    const text = Array.from(anchor.childNodes).find(
-      (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+    const textNodes = Array.from(anchor.childNodes).filter(
+      (node) => node.nodeType === Node.TEXT_NODE
     );
+    const text = textNodes.find((node) => node.textContent.trim());
 
-    if (text) text.textContent = ` ${label} `;
+    if (text && text.textContent !== ` ${label} `) {
+      text.textContent = ` ${label} `;
+    }
+    textNodes
+      .filter((node) => node !== text && node.textContent.trim())
+      .forEach((node) => {
+        node.textContent = " ";
+      });
   }
 
   function switchTarget() {
-    const current = currentPath();
-    const route = routes.find(([viPath, enPath]) =>
-      [viPath, enPath].includes(current)
-    );
+    const route = routeForPath(currentPath());
 
     if (route) return isEnglishPage() ? route[0] : route[1];
     return isEnglishPage() ? "/vn/" : "/en/";
@@ -52,6 +124,8 @@
       document.body.prepend(video);
     }
 
+    if (!video.paused) return;
+
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(function () {});
@@ -64,21 +138,26 @@
 
     document
       .querySelectorAll(".navbar-content .logo-image, .navbar-content .logo-title")
-      .forEach((anchor) => anchor.setAttribute("href", homePath));
-
-    routes.forEach(([viPath, enPath, enLabel]) => {
-      const target = english ? enPath : viPath;
-      const links = [viPath, enPath]
-        .map(
-          (path) =>
-            `.navbar-list a[href="${path}"], .drawer-navbar-list a[href="${path}"]`
-        )
-        .join(",");
-
-      document.querySelectorAll(links).forEach((anchor) => {
-        anchor.setAttribute("href", target);
-        if (english) setAnchorLabel(anchor, enLabel);
+      .forEach((anchor) => {
+        if (anchor.getAttribute("href") !== homePath) {
+          anchor.setAttribute("href", homePath);
+        }
       });
+
+    routes.forEach(([viPath, enPath, viLabel, enLabel]) => {
+      const target = english ? enPath : viPath;
+      const label = english ? enLabel : viLabel;
+      document
+        .querySelectorAll(".navbar-list a, .drawer-navbar-list a")
+        .forEach((anchor) => {
+          const route = routeForPath(pathFromHref(anchor.getAttribute("href") || ""));
+          if (!route || route[0] !== viPath || route[1] !== enPath) return;
+
+          if (anchor.getAttribute("href") !== target) {
+            anchor.setAttribute("href", target);
+          }
+          setAnchorLabel(anchor, label);
+        });
     });
 
     ["/vn/", "/en/"].forEach((rootPath) => {
@@ -92,33 +171,103 @@
     });
   }
 
+  function handleNavigationClick(event) {
+    const anchor = event.target.closest(
+      ".navbar-list a, .drawer-navbar-list a, .navbar-content .logo-image, .navbar-content .logo-title"
+    );
+
+    if (!anchor) return;
+
+    const route = routeForPath(pathFromHref(anchor.getAttribute("href") || ""));
+    if (!route) return;
+
+    const target = isEnglishPage() ? route[1] : route[0];
+    if (pathFromHref(anchor.href) === target) return;
+
+    persistCurrentTheme();
+    anchor.setAttribute("href", target);
+  }
+
   function addLanguageToggle() {
     const navbarRight = document.querySelector(".navbar-content .right");
-    if (!navbarRight || navbarRight.querySelector(".custom-top-actions")) return;
+    if (!navbarRight) return;
+
+    const existingButton = navbarRight.querySelector(".custom-language-toggle");
+    if (existingButton) {
+      const target = switchTarget();
+      const label = isEnglishPage() ? "VI" : "EN";
+      if (existingButton.getAttribute("href") !== target) {
+        existingButton.href = target;
+      }
+      if (existingButton.textContent !== label) {
+        existingButton.textContent = label;
+      }
+      return;
+    }
 
     const actions = document.createElement("div");
-    const button = document.createElement("button");
+    const button = document.createElement("a");
 
     actions.className = "custom-top-actions";
-    button.className = "custom-top-action";
-    button.type = "button";
-    button.textContent = isEnglishPage() ? "EN" : "VI";
+    button.className = "custom-top-action custom-language-toggle";
+    button.href = switchTarget();
+    button.textContent = isEnglishPage() ? "VI" : "EN";
     button.setAttribute("aria-label", "Switch language");
     button.title = "Switch language";
     button.addEventListener("click", () => {
-      window.location.href = switchTarget();
+      persistCurrentTheme();
+      button.href = switchTarget();
     });
 
     actions.append(button);
     navbarRight.append(actions);
   }
 
+  function syncScrolledNavbar() {
+    document.documentElement.classList.toggle("custom-navbar-solid", window.scrollY > 24);
+  }
+
   function boot() {
+    syncStoredTheme();
     ensureVideoBackground();
     syncNavigation();
     addLanguageToggle();
+    syncScrolledNavbar();
   }
 
+  function scheduleBoot() {
+    window.clearTimeout(window.__redefineCustomBootTimer);
+    window.__redefineCustomBootTimer = window.setTimeout(boot, 30);
+  }
+
+  function observeNavbarChanges() {
+    if (window.__redefineCustomObserver) return;
+
+    window.__redefineCustomObserver = new MutationObserver(scheduleBoot);
+    window.__redefineCustomObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  window.__redefineCustomBoot = boot;
+
   document.addEventListener("DOMContentLoaded", boot);
-  document.addEventListener("swup:contentReplaced", boot);
+  document.addEventListener("swup:page:view", boot);
+  document.addEventListener("swup:content:replace", scheduleBoot);
+  window.addEventListener("redefine:swup:ready", boot);
+  window.addEventListener("scroll", syncScrolledNavbar, { passive: true });
+  document.addEventListener("click", handleNavigationClick, true);
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".tool-dark-light-toggle")) {
+      window.setTimeout(persistCurrentTheme, 0);
+    }
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", observeNavbarChanges, { once: true });
+  } else {
+    boot();
+    observeNavbarChanges();
+  }
 })();
