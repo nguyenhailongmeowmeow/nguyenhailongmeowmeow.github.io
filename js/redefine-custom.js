@@ -195,7 +195,7 @@
     const existingButton = navbarRight.querySelector(".custom-language-toggle");
     if (existingButton) {
       const target = switchTarget();
-      const label = isEnglishPage() ? "VI" : "EN";
+      const label = isEnglishPage() ? "EN" : "VN";
       if (existingButton.getAttribute("href") !== target) {
         existingButton.href = target;
       }
@@ -211,7 +211,7 @@
     actions.className = "custom-top-actions";
     button.className = "custom-top-action custom-language-toggle";
     button.href = switchTarget();
-    button.textContent = isEnglishPage() ? "VI" : "EN";
+    button.textContent = isEnglishPage() ? "EN" : "VN";
     button.setAttribute("aria-label", "Switch language");
     button.title = "Switch language";
     button.addEventListener("click", () => {
@@ -225,6 +225,75 @@
 
   function syncScrolledNavbar() {
     document.documentElement.classList.toggle("custom-navbar-solid", window.scrollY > 24);
+  }
+
+  function closeMeomaybePopup() {
+    const popup = document.querySelector(".meomaybe-popup-overlay");
+    if (popup) {
+      popup.remove();
+    }
+  }
+
+  function openMeomaybePopup(config) {
+    closeMeomaybePopup();
+
+    const overlay = document.createElement("div");
+    const dialog = document.createElement("div");
+    const closeButton = document.createElement("button");
+    const title = document.createElement("div");
+    const image = document.createElement("img");
+    const credit = document.createElement("a");
+
+    overlay.className = "meomaybe-popup-overlay";
+    dialog.className = "meomaybe-popup";
+    closeButton.className = "meomaybe-popup-close";
+    title.className = "meomaybe-popup-title";
+    image.className = "meomaybe-popup-image";
+    credit.className = "meomaybe-popup-credit";
+
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    closeButton.type = "button";
+    closeButton.textContent = "X";
+    closeButton.setAttribute("aria-label", "Close popup");
+    title.textContent = config.title || "U Bel";
+    image.src = config.image || "/images/meomaybe.gif";
+    image.alt = config.title || "Meo maybe";
+    credit.textContent = config.credit || "By: Không Phải Minh Vũ";
+    credit.href = config.creditUrl || "https://www.facebook.com/Khongphaiminhvu";
+    credit.target = "_blank";
+    credit.rel = "noopener noreferrer";
+
+    closeButton.addEventListener("click", closeMeomaybePopup);
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeMeomaybePopup();
+      }
+    });
+
+    dialog.append(closeButton, title, image, credit);
+    overlay.append(dialog);
+    document.body.append(overlay);
+    closeButton.focus();
+  }
+
+  function handleMeomaybeClick(event) {
+    const trigger = event.target.closest(".meomaybe-trigger");
+    if (!trigger) return;
+
+    const requiredClicks = Number.parseInt(trigger.dataset.clicks || "36", 10);
+    const currentClicks = Number.parseInt(trigger.dataset.currentClicks || "0", 10) + 1;
+    trigger.dataset.currentClicks = String(currentClicks);
+
+    if (currentClicks < requiredClicks) return;
+
+    trigger.dataset.currentClicks = "0";
+    openMeomaybePopup({
+      title: trigger.dataset.popupTitle,
+      image: trigger.dataset.popupImage,
+      credit: trigger.dataset.popupCredit,
+      creditUrl: trigger.dataset.popupCreditUrl,
+    });
   }
 
   function boot() {
@@ -258,6 +327,12 @@
   window.addEventListener("redefine:swup:ready", boot);
   window.addEventListener("scroll", syncScrolledNavbar, { passive: true });
   document.addEventListener("click", handleNavigationClick, true);
+  document.addEventListener("click", handleMeomaybeClick);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMeomaybePopup();
+    }
+  });
   document.addEventListener("click", (event) => {
     if (event.target.closest(".tool-dark-light-toggle")) {
       window.setTimeout(persistCurrentTheme, 0);
