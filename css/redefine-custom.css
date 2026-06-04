@@ -120,6 +120,12 @@ footer.footer {
   -webkit-backdrop-filter: blur(12px) saturate(1.25);
 }
 
+.statistics,
+footer.footer .info-container > .text-center:not(.relative),
+footer.footer .post-count {
+  display: none !important;
+}
+
 .navbar-content {
   border: 0 !important;
   border-radius: 0 0 18px 18px;
