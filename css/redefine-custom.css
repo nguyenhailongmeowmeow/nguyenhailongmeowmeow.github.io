@@ -106,6 +106,61 @@ body.developer-tools-locked {
   line-height: 1.5;
 }
 
+.developer-tools-ip-card {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.16);
+  text-align: left;
+}
+
+.developer-tools-ip-primary {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.developer-tools-ip-primary span,
+.developer-tools-ip-grid dt {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.developer-tools-ip-primary b {
+  color: #fff;
+  font-size: clamp(20px, 4vw, 28px);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.developer-tools-ip-grid {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.developer-tools-ip-grid div {
+  display: grid;
+  gap: 2px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.developer-tools-ip-grid dd {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .developer-tools-blocker--pulse .developer-tools-blocker__panel {
   animation: devtool-warning-pulse 0.7s ease both;
 }
