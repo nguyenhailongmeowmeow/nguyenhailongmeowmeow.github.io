@@ -18,6 +18,14 @@
         var devtoolOpenAttempts = Number(sessionStorage.getItem("devtoolOpenAttempts") || "0");
         var visitorIp = sessionStorage.getItem("visitorIp") || "đang tải...";
         var visitorIpRequested = Boolean(sessionStorage.getItem("visitorIp"));
+        var isEnglishPage = window.location.pathname.indexOf("/en/") === 0;
+        var devtoolTitle = isEnglishPage
+          ? "Oh dude, why are you opening Developer Tools?"
+          : "Bạn đã mở Developer Tools :(((";
+        var devtoolMessage = isEnglishPage
+          ? "Please close it and refresh the page to continue."
+          : "Làm ơn hãy đóng DevTools và tải lại trang để tiếp tục.";
+        var devtoolIpLabel = isEnglishPage ? "Your IP is:" : "IP của bạn là:";
 
         function updateVisitorIp(ip) {
           visitorIp = ip || "không xác định";
@@ -58,9 +66,9 @@
             overlay.setAttribute("aria-live", "assertive");
             overlay.innerHTML =
               '<div class="developer-tools-blocker__panel">' +
-              "<strong>Bạn đã mở Developer Tools :(((</strong>" +
-              "<span>Làm ơn hãy đóng DevTools và tải lại trang để tiếp tục.</span>" +
-              '<small>IP của bạn là: <b data-devtool-ip>đang tải...</b></small>' +
+              "<strong>" + devtoolTitle + "</strong>" +
+              "<span>" + devtoolMessage + "</span>" +
+              "<small>" + devtoolIpLabel + ' <b data-devtool-ip>đang tải...</b></small>' +
               "</div>";
             root.appendChild(overlay);
           }
