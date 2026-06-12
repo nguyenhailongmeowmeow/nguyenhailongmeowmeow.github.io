@@ -1,5 +1,5 @@
 (function () {
-  var ipProfileCacheVersion = 3;
+  var ipProfileCacheVersion = 4;
   var devtoolOverlayTimer;
   var devtoolOpenAttempts = Number(
     sessionStorage.getItem("devtoolOpenAttempts") || "0",
@@ -9,7 +9,11 @@
     visitorIpProfile.loaded &&
       (visitorIpProfile.ip || visitorIpProfile.location || visitorIpProfile.isp),
   );
-  var isEnglishPage = window.location.pathname.indexOf("/en/") === 0;
+  function isEnglishPath(pathname) {
+    return pathname === "/en" || pathname.indexOf("/en/") === 0;
+  }
+
+  var isEnglishPage = isEnglishPath(window.location.pathname);
   var text = isEnglishPage
     ? {
         title: "Oh dude, why are you opening Developer Tools?",
