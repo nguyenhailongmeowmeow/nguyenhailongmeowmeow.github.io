@@ -6,6 +6,20 @@
 
   window.__redefineCustomLoaded = true;
 
+  function showDeveloperToolsMessage() {
+    window.setTimeout(console.clear.bind(console), 0);
+    window.setTimeout(function () {
+      console.log(
+        "%cN\u00c0OOOOO!",
+        "color: red; font-family: sans-serif; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;"
+      );
+      console.log(
+        "%cCh\u00fac m\u1eebng b\u1ea1n \u0111\u00e3 truy c\u1eadp v\u00e0o \u0111\u01b0\u1ee3c f12/developer tools b\u1eb1ng m\u1ed9t c\u00e1ch n\u00e0o \u0111\u00f3,gi\u1edd h\u00e3y v\u1ecdc tho\u1ea3i m\u00e1i v\u00e0 l\u00e0m con m\u1ecba g\u00ec c\u0169ng \u0111\u01b0\u1ee3c ;;-;;;\n\nB\u1ea1n th\u1eafng h\u1ec7 th\u1ed1ng anti F12 c\u1ee7a t r\u1ed3i :((((",
+        "color: #333; font-family: sans-serif; font-size: 16px; padding: 5px 0;"
+      );
+    }, 10);
+  }
+
   const routes = [
     ["/vn/", "/en/", "TRANG CH\u1ee6", "HOME"],
     ["/vn/kho-anh/", "/en/photo-gallery/", "KHO \u1ea2NH", "PHOTO GALLERY"],
@@ -13,6 +27,8 @@
     ["/vn/cong-cu-lam-web/", "/en/web-tools/", "C\u00d4NG C\u1ee4 L\u00c0M WEB", "WEB TOOLS"],
   ];
   const themeStatusKey = "REDEFINE-THEME-STATUS";
+
+  showDeveloperToolsMessage();
 
   const normalizePath = (pathname) =>
     pathname.endsWith("/") ? pathname : `${pathname}/`;
