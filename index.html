@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="vi">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=/vn/">
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=/vn/" />
     <script>
       window.location.replace("/vn/");
     </script>
@@ -15,7 +15,9 @@
     <script>
       (function () {
         var devtoolOverlayTimer;
-        var devtoolOpenAttempts = Number(sessionStorage.getItem("devtoolOpenAttempts") || "0");
+        var devtoolOpenAttempts = Number(
+          sessionStorage.getItem("devtoolOpenAttempts") || "0",
+        );
         var visitorIp = sessionStorage.getItem("visitorIp") || "đang tải...";
         var visitorIpRequested = Boolean(sessionStorage.getItem("visitorIp"));
         var isEnglishPage = window.location.pathname.indexOf("/en/") === 0;
@@ -25,7 +27,9 @@
         var devtoolMessage = isEnglishPage
           ? "Please close it and refresh the page to continue."
           : "Làm ơn hãy đóng DevTools và tải lại trang để tiếp tục.";
-        var devtoolIpLabel = isEnglishPage ? "Your IP is:" : "IP của bạn là:";
+        var devtoolIpLabel = isEnglishPage
+          ? "Your IP address is:"
+          : "IP của bạn là:";
 
         function updateVisitorIp(ip) {
           visitorIp = ip || "không xác định";
@@ -66,9 +70,15 @@
             overlay.setAttribute("aria-live", "assertive");
             overlay.innerHTML =
               '<div class="developer-tools-blocker__panel">' +
-              "<strong>" + devtoolTitle + "</strong>" +
-              "<span>" + devtoolMessage + "</span>" +
-              "<small>" + devtoolIpLabel + ' <b data-devtool-ip>đang tải...</b></small>' +
+              "<strong>" +
+              devtoolTitle +
+              "</strong>" +
+              "<span>" +
+              devtoolMessage +
+              "</span>" +
+              "<small>" +
+              devtoolIpLabel +
+              " <b data-devtool-ip>đang tải...</b></small>" +
               "</div>";
             root.appendChild(overlay);
           }
@@ -78,7 +88,8 @@
           loadVisitorIp();
 
           document.documentElement.classList.add("developer-tools-locked");
-          if (document.body) document.body.classList.add("developer-tools-locked");
+          if (document.body)
+            document.body.classList.add("developer-tools-locked");
 
           overlay.classList.remove("developer-tools-blocker--pulse");
           void overlay.offsetWidth;
@@ -87,7 +98,10 @@
 
         function startDevtoolOverlaySpam() {
           devtoolOpenAttempts += 1;
-          sessionStorage.setItem("devtoolOpenAttempts", String(devtoolOpenAttempts));
+          sessionStorage.setItem(
+            "devtoolOpenAttempts",
+            String(devtoolOpenAttempts),
+          );
           showDevtoolOverlay();
 
           window.clearInterval(devtoolOverlayTimer);
@@ -99,15 +113,20 @@
           var overlay = document.getElementById("developer-tools-blocker");
           if (overlay) overlay.remove();
           document.documentElement.classList.remove("developer-tools-locked");
-          if (document.body) document.body.classList.remove("developer-tools-locked");
+          if (document.body)
+            document.body.classList.remove("developer-tools-locked");
         }
 
         function isDevtoolShortcut(event) {
           var key = event.key.toLowerCase();
           return (
             event.key === "F12" ||
-            (event.ctrlKey && event.shiftKey && ["i", "j", "c"].indexOf(key) !== -1) ||
-            (event.metaKey && event.altKey && ["i", "j", "c"].indexOf(key) !== -1)
+            (event.ctrlKey &&
+              event.shiftKey &&
+              ["i", "j", "c"].indexOf(key) !== -1) ||
+            (event.metaKey &&
+              event.altKey &&
+              ["i", "j", "c"].indexOf(key) !== -1)
           );
         }
 
@@ -116,21 +135,22 @@
           function (event) {
             if (isDevtoolShortcut(event)) startDevtoolOverlaySpam();
           },
-          true
+          true,
         );
 
-        if (window.DisableDevtool) DisableDevtool({
-          disableMenu: true,
-          clearLog: true,
-          ondevtoolopen: function (_type, next) {
-            startDevtoolOverlaySpam();
-            next();
-          },
-          ondevtoolclose: stopDevtoolOverlaySpam,
-        });
+        if (window.DisableDevtool)
+          DisableDevtool({
+            disableMenu: true,
+            clearLog: true,
+            ondevtoolopen: function (_type, next) {
+              startDevtoolOverlaySpam();
+              next();
+            },
+            ondevtoolclose: stopDevtoolOverlaySpam,
+          });
       })();
     </script>
-    <link rel="canonical" href="/vn/">
+    <link rel="canonical" href="/vn/" />
     <title>Nguyen Hai Long</title>
   </head>
   <body>
