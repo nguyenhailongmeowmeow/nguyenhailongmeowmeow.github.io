@@ -6,29 +6,24 @@
 
   window.__redefineCustomLoaded = true;
 
-  function showDeveloperToolsMessage() {
-    window.setTimeout(console.clear.bind(console), 0);
-    window.setTimeout(function () {
-      console.log(
-        "%cN\u00c0OOOOO!",
-        "color: red; font-family: sans-serif; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;"
-      );
-      console.log(
-        "%cCh\u00fac m\u1eebng b\u1ea1n \u0111\u00e3 truy c\u1eadp v\u00e0o \u0111\u01b0\u1ee3c f12/developer tools b\u1eb1ng m\u1ed9t c\u00e1ch n\u00e0o \u0111\u00f3,gi\u1edd h\u00e3y v\u1ecdc tho\u1ea3i m\u00e1i v\u00e0 l\u00e0m con m\u1ecba g\u00ec c\u0169ng \u0111\u01b0\u1ee3c ;;-;;;\n\nB\u1ea1n th\u1eafng h\u1ec7 th\u1ed1ng anti F12 c\u1ee7a t r\u1ed3i :((((",
-        "color: #333; font-family: sans-serif; font-size: 16px; padding: 5px 0;"
-      );
-    }, 10);
-  }
-
   const routes = [
     ["/vn/", "/en/", "TRANG CH\u1ee6", "HOME"],
     ["/vn/kho-anh/", "/en/photo-gallery/", "KHO \u1ea2NH", "PHOTO GALLERY"],
-    ["/vn/phan-mem-cong-cu/", "/en/software-tools/", "PH\u1ea6N M\u1ec0M/C\u00d4NG C\u1ee4", "SOFTWARE/TOOLS"],
-    ["/vn/cong-cu-lam-web/", "/en/web-tools/", "C\u00d4NG C\u1ee4 L\u00c0M WEB", "WEB TOOLS"],
+    [
+      "/vn/phan-mem-cong-cu/",
+      "/en/software-tools/",
+      "PH\u1ea6N M\u1ec0M/C\u00d4NG C\u1ee4",
+      "SOFTWARE/TOOLS",
+    ],
+    [
+      "/vn/cong-cu-lam-web/",
+      "/en/web-tools/",
+      "C\u00d4NG C\u1ee4 L\u00c0M WEB",
+      "WEB TOOLS",
+    ],
   ];
   const themeStatusKey = "REDEFINE-THEME-STATUS";
-
-  showDeveloperToolsMessage();
+  let videoBackgroundScheduled = false;
 
   const normalizePath = (pathname) =>
     pathname.endsWith("/") ? pathname : `${pathname}/`;
@@ -47,7 +42,7 @@
   function routeForPath(path) {
     const normalized = normalizePath(path);
     return routes.find(([viPath, enPath]) =>
-      [viPath, enPath].includes(normalized)
+      [viPath, enPath].includes(normalized),
     );
   }
 
@@ -103,7 +98,7 @@
     }
 
     const textNodes = Array.from(anchor.childNodes).filter(
-      (node) => node.nodeType === Node.TEXT_NODE
+      (node) => node.nodeType === Node.TEXT_NODE,
     );
     const text = textNodes.find((node) => node.textContent.trim());
 
@@ -135,7 +130,8 @@
       video.muted = true;
       video.loop = true;
       video.playsInline = true;
-      video.preload = "auto";
+      video.preload = "metadata";
+      video.setAttribute("fetchpriority", "low");
       video.setAttribute("aria-hidden", "true");
       document.body.prepend(video);
     }
@@ -148,12 +144,28 @@
     }
   }
 
+  function scheduleVideoBackground() {
+    if (videoBackgroundScheduled) return;
+    videoBackgroundScheduled = true;
+
+    const start = () => ensureVideoBackground();
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(start, { timeout: 1200 });
+      return;
+    }
+
+    window.setTimeout(start, 400);
+  }
+
   function syncNavigation() {
     const english = isEnglishPage();
     const homePath = english ? "/en/" : "/vn/";
 
     document
-      .querySelectorAll(".navbar-content .logo-image, .navbar-content .logo-title")
+      .querySelectorAll(
+        ".navbar-content .logo-image, .navbar-content .logo-title",
+      )
       .forEach((anchor) => {
         if (anchor.getAttribute("href") !== homePath) {
           anchor.setAttribute("href", homePath);
@@ -166,7 +178,9 @@
       document
         .querySelectorAll(".navbar-list a, .drawer-navbar-list a")
         .forEach((anchor) => {
-          const route = routeForPath(pathFromHref(anchor.getAttribute("href") || ""));
+          const route = routeForPath(
+            pathFromHref(anchor.getAttribute("href") || ""),
+          );
           if (!route || route[0] !== viPath || route[1] !== enPath) return;
 
           if (anchor.getAttribute("href") !== target) {
@@ -180,7 +194,7 @@
       if (currentPath().startsWith(rootPath) && currentPath() !== rootPath) {
         document
           .querySelectorAll(
-            `.navbar-list a[href="${rootPath}"], .drawer-navbar-list a[href="${rootPath}"]`
+            `.navbar-list a[href="${rootPath}"], .drawer-navbar-list a[href="${rootPath}"]`,
           )
           .forEach((anchor) => anchor.classList.remove("active"));
       }
@@ -189,7 +203,7 @@
 
   function handleNavigationClick(event) {
     const anchor = event.target.closest(
-      ".navbar-list a, .drawer-navbar-list a, .navbar-content .logo-image, .navbar-content .logo-title"
+      ".navbar-list a, .drawer-navbar-list a, .navbar-content .logo-image, .navbar-content .logo-title",
     );
 
     if (!anchor) return;
@@ -240,7 +254,10 @@
   }
 
   function syncScrolledNavbar() {
-    document.documentElement.classList.toggle("custom-navbar-solid", window.scrollY > 24);
+    document.documentElement.classList.toggle(
+      "custom-navbar-solid",
+      window.scrollY > 24,
+    );
   }
 
   function closeMeomaybePopup() {
@@ -276,7 +293,8 @@
     image.src = config.image || "/images/meomaybe.gif";
     image.alt = config.title || "Meo maybe";
     credit.textContent = config.credit || "By: Không Phải Minh Vũ";
-    credit.href = config.creditUrl || "https://www.facebook.com/Khongphaiminhvu";
+    credit.href =
+      config.creditUrl || "https://www.facebook.com/Khongphaiminhvu";
     credit.target = "_blank";
     credit.rel = "noopener noreferrer";
 
@@ -298,7 +316,8 @@
     if (!trigger) return;
 
     const requiredClicks = Number.parseInt(trigger.dataset.clicks || "36", 10);
-    const currentClicks = Number.parseInt(trigger.dataset.currentClicks || "0", 10) + 1;
+    const currentClicks =
+      Number.parseInt(trigger.dataset.currentClicks || "0", 10) + 1;
     trigger.dataset.currentClicks = String(currentClicks);
 
     if (currentClicks < requiredClicks) return;
@@ -314,7 +333,7 @@
 
   function boot() {
     syncStoredTheme();
-    ensureVideoBackground();
+    scheduleVideoBackground();
     syncNavigation();
     addLanguageToggle();
     syncScrolledNavbar();
@@ -356,9 +375,12 @@
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", observeNavbarChanges, { once: true });
+    document.addEventListener("DOMContentLoaded", observeNavbarChanges, {
+      once: true,
+    });
   } else {
     boot();
     observeNavbarChanges();
   }
 })();
+
