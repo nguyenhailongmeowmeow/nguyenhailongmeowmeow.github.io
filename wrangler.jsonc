@@ -4,7 +4,6 @@
   "compatibility_date": "2026-06-28",
   "assets": {
     "directory": ".",
-    "not_found_handling": "404-page",
-    "exclude": [".git", ".wrangler", "node_modules", "src"]
+    "not_found_handling": "404-page"
   }
 }
