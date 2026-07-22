@@ -220,6 +220,8 @@
 
     if (!anchor) return;
 
+    preserveVideoDuringNavigation();
+
     const route = routeForPath(pathFromHref(anchor.getAttribute("href") || ""));
     if (!route) return;
 
