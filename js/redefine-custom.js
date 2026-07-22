@@ -118,8 +118,29 @@
     return isEnglishPage() ? "/vn/" : "/en/";
   }
 
-  let videoPlayedOnce = false;
-  let videoCurrentTime = 0;
+  const videoStorageKey = "REDEFINE-VIDEO-BACKGROUND";
+
+  function saveVideoState(currentTime, playedOnce) {
+    try {
+      localStorage.setItem(videoStorageKey, JSON.stringify({
+        time: currentTime || 0,
+        playedOnce: playedOnce || false,
+      }));
+    } catch (e) {}
+  }
+
+  function clearVideoState() {
+    try { localStorage.removeItem(videoStorageKey); } catch (e) {}
+  }
+
+  function readVideoState() {
+    try {
+      const raw = localStorage.getItem(videoStorageKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   function ensureVideoBackground() {
     let video = document.getElementById("redefine-video-background");
@@ -127,33 +148,42 @@
     if (!video) {
       video = document.createElement("video");
       video.id = "redefine-video-background";
-      video.className = "swup-preserve-video";
       video.src = "/images/background.mp4?v=13";
-      video.autoplay = true;
       video.muted = true;
       video.loop = true;
       video.playsInline = true;
       video.preload = "metadata";
       video.setAttribute("fetchpriority", "low");
       video.setAttribute("aria-hidden", "true");
-      video.setAttribute("data-swup-preserve", "true");
     }
 
     if (!document.body.contains(video)) {
       document.body.prepend(video);
     }
 
-    // If video is already playing or has been played once, don't restart it
-    if (videoPlayedOnce || !video.paused) {
-      return;
+    const savedState = readVideoState();
+    if (savedState) {
+      clearVideoState();
+      if (savedState.playedOnce) {
+        if (!video.paused) return;
+        video.currentTime = savedState.time;
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {});
+        }
+        return;
+      }
     }
 
-    // Save current time periodically to prevent loss on navigation
+    if (!video.paused) return;
+
     video.addEventListener("timeupdate", () => {
-      videoCurrentTime = video.currentTime;
+      saveVideoState(video.currentTime, false);
     }, { passive: true });
 
-    video.addEventListener("ended", () => { videoPlayedOnce = true; }, { once: true });
+    video.addEventListener("ended", () => {
+      saveVideoState(0, true);
+    }, { once: true });
 
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
@@ -161,12 +191,10 @@
     }
   }
 
-  // Ensure video is not removed during swup navigation
   function preserveVideoDuringNavigation() {
     const video = document.getElementById("redefine-video-background");
     if (video) {
-      videoCurrentTime = video.currentTime;
-      videoPlayedOnce = true;
+      saveVideoState(video.currentTime, true);
     }
   }
 
@@ -353,10 +381,6 @@
     syncScrolledNavbar();
   }
 
-  function handlePageTransition() {
-    preserveVideoDuringNavigation();
-  }
-
   function scheduleBoot() {
     window.clearTimeout(window.__redefineCustomBootTimer);
     window.__redefineCustomBootTimer = window.setTimeout(boot, 30);
@@ -374,10 +398,9 @@
 
   window.__redefineCustomBoot = boot;
 
+  window.addEventListener("beforeunload", preserveVideoDuringNavigation);
+
   document.addEventListener("DOMContentLoaded", boot);
-  document.addEventListener("swup:page:view", boot);
-  document.addEventListener("swup:content:replace", scheduleBoot);
-  document.addEventListener("swup:willReplaceContent", handlePageTransition);
   window.addEventListener("redefine:swup:ready", boot);
   window.addEventListener("scroll", syncScrolledNavbar, { passive: true });
   document.addEventListener("click", handleNavigationClick, true);
