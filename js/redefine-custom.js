@@ -332,7 +332,7 @@
     closeButton.textContent = "X";
     closeButton.setAttribute("aria-label", "Close popup");
     title.textContent = config.title || "U Bel";
-    image.src = config.image || "/images/meomaybe.gif";
+    image.src = config.image || "/images/meomaybe.webp";
     image.alt = config.title || "Meo maybe";
     credit.textContent = config.credit || "By: Không Phải Minh Vũ";
     credit.href =

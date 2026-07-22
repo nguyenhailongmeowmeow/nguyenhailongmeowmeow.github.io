@@ -3,7 +3,7 @@
  * By Vercel
  */
 
-@font-face {
+@font-face { font-display: swap; 
   font-display: swap;
   font-family: "Geist Mono";
   font-style: normal;
