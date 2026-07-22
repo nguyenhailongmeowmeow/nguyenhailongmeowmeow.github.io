@@ -27,7 +27,15 @@
   --nav-text: rgba(255, 255, 255, 0.95);
 }
 
-html,
+html:not(.is-animating):not(.is-changing) .transition-fade-up,
+html:not(.is-animating):not(.is-changing) .transition-fade {
+  transition: none !important;
+}
+
+html {
+  background: #08101a !important;
+}
+
 body {
   min-height: 100%;
   background: transparent !important;
